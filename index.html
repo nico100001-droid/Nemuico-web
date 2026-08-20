@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Arcade Web</title>
+    <title>Nemuico Web</title>
     <style>
         body, html {
             margin: 0;
@@ -16,6 +16,7 @@
             justify-content: center;
             align-items: center;
         }
+        /* Garantiza que el canvas del emulador ocupe toda la pantalla */
         canvas {
             width: 100vw !important;
             height: 100vh !important;
@@ -23,7 +24,7 @@
             image-rendering: pixelated;
         }
     </style>
-    <!-- Librería Nostalgist (Soporte nativo WASM/RetroArch) -->
+    <!-- Carga de Nostalgist desde CDN estable -->
     <script src="https://unpkg.com/nostalgist/dist/nostalgist.umd.js"></script>
 </head>
 <body>
@@ -31,19 +32,19 @@
     <script>
         async function launchGame() {
             try {
-                // Para NES utiliza el núcleo 'fceumm'
-                // Para SNES cambia a 'snes9x'
-                // Para SEGA cambia a 'genesis_plus_gx'
+                // Configuramos Nostalgist usando la CDN de unpkg directamente
                 await Nostalgist.launch({
                     core: 'fceumm',
                     rom: 'https://tomiaa12.github.io/nesRoms/nes/543.nes',
+                    // CDN pública estable con los archivos WebAssembly precompilados de RetroArch
+                    cdn: 'https://unpkg.com/@retroarch/emulatorjs@latest/dist/'
                 });
             } catch (error) {
                 console.error("Error iniciando el emulador:", error);
             }
         }
 
-        // Se ejecuta automáticamente al cargar el DOM
+        // Ejecutar al cargar la página
         window.addEventListener('DOMContentLoaded', launchGame);
     </script>
 
