@@ -3,55 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nemuico Web</title>
+
+    <title>Mi Emulador NES</title>
+
     <style>
-        body, html {
+        html, body {
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100%;
+            height: 100%;
+            background: #111;
         }
-        canvas {
-            width: 100vw !important;
-            height: 100vh !important;
-            object-fit: contain;
-            image-rendering: pixelated;
+
+        #game {
+            width: 100%;
+            height: 100%;
         }
     </style>
-    <!-- Carga de la librería Nostalgist -->
-    <script src="https://unpkg.com/nostalgist/dist/nostalgist.umd.js"></script>
 </head>
+
 <body>
 
+    <div id="game"></div>
+
     <script>
-        // ROM de NES (LJ65) embebida directamente en formato Base64 para eliminar dependencias externas
-        const nesRomBase64 = "T0VTThABCgAAAAAAYXNtAAAAA1A="; // Puntero comprimido/ejemplo
+        EJS_player = "#game";
 
-        async function initEmulator() {
-            try {
-                // Utiliza la ROM directa desde un link con CORS verificado en jsDelivr
-                await Nostalgist.nes('https://github.com/retrobrews/nes-games/raw/refs/heads/master/invaders.nes');
-            } catch (err) {
-                console.error("Fallo con URL remota, intentando con alternativa...", err);
-                
-                // Si falla el link, ejecuta directo usando la ROM embebida local
-                try {
-                    await Nostalgist.nes(
-                        'https://github.com/retrobrews/nes-games/raw/refs/heads/master/invaders.nes'
-                    );
-                } catch (e) {
-                    console.error("Error fatal:", e);
-                }
-            }
-        }
+        // Sistema
+        EJS_core = "nes";
 
-        window.addEventListener('DOMContentLoaded', initEmulator);
+        // ROM
+        EJS_gameUrl = "https://github.com/retrobrews/nes-games/raw/refs/heads/master/invaders.nes";
+
+        // Datos de EmulatorJS
+        EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+
+        // Nombre del juego
+        EJS_gameName = "NES Homebrew";
+
+        // Iniciar automáticamente
+        EJS_startOnLoaded = true;
     </script>
+
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
 </html>
