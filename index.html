@@ -35,14 +35,14 @@
         async function initEmulator() {
             try {
                 // Utiliza la ROM directa desde un link con CORS verificado en jsDelivr
-                await Nostalgist.nes('https://cdn.jsdelivr.net/gh/bfirsh/jsnes@master/roms/lj65.nes');
+                await Nostalgist.nes('https://github.com/retrobrews/nes-games/raw/refs/heads/master/invaders.nes');
             } catch (err) {
                 console.error("Fallo con URL remota, intentando con alternativa...", err);
                 
                 // Si falla el link, ejecuta directo usando la ROM embebida local
                 try {
                     await Nostalgist.nes(
-                        'https://raw.githubusercontent.com/bfirsh/jsnes/master/roms/lj65.nes'
+                        'https://github.com/retrobrews/nes-games/raw/refs/heads/master/invaders.nes'
                     );
                 } catch (e) {
                     console.error("Error fatal:", e);
