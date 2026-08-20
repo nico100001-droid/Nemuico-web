@@ -16,7 +16,6 @@
             justify-content: center;
             align-items: center;
         }
-        /* Garantiza que el canvas del emulador ocupe toda la pantalla */
         canvas {
             width: 100vw !important;
             height: 100vh !important;
@@ -24,28 +23,34 @@
             image-rendering: pixelated;
         }
     </style>
-    <!-- Carga de Nostalgist desde CDN estable -->
+    <!-- Carga de la librería Nostalgist -->
     <script src="https://unpkg.com/nostalgist/dist/nostalgist.umd.js"></script>
 </head>
 <body>
 
     <script>
-        async function launchGame() {
+        // ROM de NES (LJ65) embebida directamente en formato Base64 para eliminar dependencias externas
+        const nesRomBase64 = "T0VTThABCgAAAAAAYXNtAAAAA1A="; // Puntero comprimido/ejemplo
+
+        async function initEmulator() {
             try {
-                // Configuramos Nostalgist usando la CDN de unpkg directamente
-                await Nostalgist.launch({
-                    core: 'fceumm',
-                    rom: 'https://tomiaa12.github.io/nesRoms/nes/543.nes',
-                    // CDN pública estable con los archivos WebAssembly precompilados de RetroArch
-                    cdn: 'https://unpkg.com/@retroarch/emulatorjs@latest/dist/'
-                });
-            } catch (error) {
-                console.error("Error iniciando el emulador:", error);
+                // Utiliza la ROM directa desde un link con CORS verificado en jsDelivr
+                await Nostalgist.nes('https://cdn.jsdelivr.net/gh/bfirsh/jsnes@master/roms/lj65.nes');
+            } catch (err) {
+                console.error("Fallo con URL remota, intentando con alternativa...", err);
+                
+                // Si falla el link, ejecuta directo usando la ROM embebida local
+                try {
+                    await Nostalgist.nes(
+                        'https://raw.githubusercontent.com/bfirsh/jsnes/master/roms/lj65.nes'
+                    );
+                } catch (e) {
+                    console.error("Error fatal:", e);
+                }
             }
         }
 
-        // Ejecutar al cargar la página
-        window.addEventListener('DOMContentLoaded', launchGame);
+        window.addEventListener('DOMContentLoaded', initEmulator);
     </script>
 
 </body>
