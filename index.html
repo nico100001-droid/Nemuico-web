@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Arcade Web</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            width: 100vw !important;
+            height: 100vh !important;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+    </style>
+    <!-- Librería Nostalgist (Soporte nativo WASM/RetroArch) -->
+    <script src="https://unpkg.com/nostalgist/dist/nostalgist.umd.js"></script>
+</head>
+<body>
+
+    <script>
+        async function launchGame() {
+            try {
+                // Para NES utiliza el núcleo 'fceumm'
+                // Para SNES cambia a 'snes9x'
+                // Para SEGA cambia a 'genesis_plus_gx'
+                await Nostalgist.launch({
+                    core: 'fceumm',
+                    rom: 'https://tomiaa12.github.io/nesRoms/nes/543.nes',
+                });
+            } catch (error) {
+                console.error("Error iniciando el emulador:", error);
+            }
+        }
+
+        // Se ejecuta automáticamente al cargar el DOM
+        window.addEventListener('DOMContentLoaded', launchGame);
+    </script>
+
+</body>
+</html>
