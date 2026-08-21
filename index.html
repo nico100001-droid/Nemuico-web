@@ -3,10 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Nemuico Web - NES</title>
+    <title>Nemuico - Prueba Nostalgist</title>
 
     <style>
         html,
@@ -15,91 +14,172 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background: #111;
+            background: #000;
             overflow: hidden;
         }
 
-        /*
-         * Área del emulador.
-         *
-         * PRUEBA:
-         * Limitamos la superficie a 1280x720.
-         *
-         * La TV 4K se encargará posteriormente
-         * de escalar la imagen a pantalla completa.
-         */
-#game {
-    width: 640px;
-    height: 360px;
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    margin: auto;
-}
+        #game {
+            width: 1280px;
+            height: 720px;
+
+            max-width: 100vw;
+            max-height: 100vh;
+
+            background: #000;
+        }
+
+        #loading {
+            position: fixed;
+            inset: 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #000;
+            color: white;
+
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+
+            z-index: 1000;
+        }
+
+        #error {
+            position: fixed;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+
+            padding: 15px;
+
+            background: #300;
+            color: #fff;
+
+            font-family: monospace;
+            font-size: 14px;
+
+            display: none;
+
+            z-index: 2000;
+        }
     </style>
 </head>
 
 <body>
 
-    <div id="game"></div>
+    <div id="loading">
+        Cargando emulador...
+    </div>
+
+    <canvas id="game"></canvas>
+
+    <div id="error"></div>
+
+
+    <script src="https://unpkg.com/nostalgist@0.21.1/dist/nostalgist.umd.js"></script>
+
 
     <script>
 
-        /*
-         * Contenedor donde EmulatorJS se va a iniciar
-         */
-        EJS_player = "#game";
+        const ROM =
+            "https://raw.githubusercontent.com/retrobrews/nes-games/master/invaders.nes";
 
 
-        /*
-         * Núcleo de NES
-         */
-        EJS_core = "nes";
+        async function iniciarEmulador() {
+
+            try {
+
+                console.log("Iniciando Nostalgist.js...");
+
+                console.log("ROM:", ROM);
+
+                const nostalgist = await Nostalgist.Nostalgist.launch({
+
+                    /*
+                     * Core NES
+                     */
+                    core: "fceumm",
+
+                    /*
+                     * ROM
+                     */
+                    rom: ROM,
+
+                    /*
+                     * Canvas que utilizará RetroArch
+                     */
+                    element: document.getElementById("game"),
+
+                    /*
+                     * Configuración de RetroArch
+                     */
+                    retroarchConfig: {
+
+                        /*
+                         * Video
+                         */
+                        video_smooth: false,
+
+                        /*
+                         * Aspect ratio
+                         */
+                        video_aspect_ratio_auto: true,
+
+                        /*
+                         * Audio
+                         */
+                        audio_enable: true,
+
+                        /*
+                         * Input
+                         */
+                        input_autodetect_enable: true
+                    }
+
+                });
 
 
-        /*
-         * ROM
-         *
-         * Esta es la ROM homebrew que ya comprobamos
-         * que funciona mediante raw.githubusercontent.com
-         */
-        EJS_gameUrl =
-            "https://raw.githubusercontent.com/retrobrews/nes-games/master/jetpaco.nes";
+                console.log("Nostalgist iniciado correctamente.");
+
+                document.getElementById("loading").style.display = "none";
 
 
-        /*
-         * Archivos de EmulatorJS
-         */
-        EJS_pathtodata =
-            "https://cdn.emulatorjs.org/stable/data/";
+                /*
+                 * Guardamos la instancia por si después
+                 * necesitamos acceder a RetroArch.
+                 */
+                window.nostalgist = nostalgist;
 
 
-        /*
-         * Nombre mostrado por EmulatorJS
-         */
-        EJS_gameName = "Invaders";
+            } catch (error) {
+
+                console.error("Error iniciando Nostalgist:", error);
+
+                document.getElementById("loading").style.display = "none";
+
+                const errorBox = document.getElementById("error");
+
+                errorBox.style.display = "block";
+
+                errorBox.textContent =
+                    "ERROR NOSTALGIST: " + error;
 
 
-        /*
-         * Idioma
-         *
-         * es-AR no existe en el CDN de EmulatorJS.
-         * Usamos español latinoamericano.
-         */
-        EJS_language = "es-419";
+            }
+
+        }
 
 
-        /*
-         * Arrancar automáticamente cuando
-         * EmulatorJS termine de cargar.
-         */
-        EJS_startOnLoaded = true;
+        iniciarEmulador();
 
     </script>
-
-
-    <!--
-        Cargamos EmulatorJS
-    -->
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
 
