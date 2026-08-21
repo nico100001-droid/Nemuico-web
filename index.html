@@ -8,32 +8,32 @@
 
     <style>
         html,
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            overflow: hidden;
-        }
+body {
+    margin: 0;
+    padding: 0;
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-#game {
-    width: 1280px;
-    height: 720px;
-
-    position: fixed;
-    left: 50%;
-    top: 50%;
-
-    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
 
     background: #000;
+
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Canvas REAL creado por Nostalgist */
+canvas {
+    width: 1280px !important;
+    height: 720px !important;
+
+    background: #000;
+
+    image-rendering: pixelated;
 }
 
         #loading {
