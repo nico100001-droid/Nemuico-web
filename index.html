@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Mi Emulador NES</title>
+    <title>Nemuico Web - NES</title>
 
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             background: #111;
+            overflow: hidden;
         }
 
+        /*
+         * Área del emulador.
+         *
+         * PRUEBA:
+         * Limitamos la superficie a 1280x720.
+         *
+         * La TV 4K se encargará posteriormente
+         * de escalar la imagen a pantalla completa.
+         */
         #game {
-            width: 100%;
-            height: 100%;
+            width: 1280px;
+            height: 720px;
+
+            max-width: 100vw;
+            max-height: 100vh;
+
+            margin: auto;
         }
     </style>
 </head>
@@ -27,25 +45,65 @@
     <div id="game"></div>
 
     <script>
+
+        /*
+         * Contenedor donde EmulatorJS se va a iniciar
+         */
         EJS_player = "#game";
 
-        // Sistema
+
+        /*
+         * Núcleo de NES
+         */
         EJS_core = "nes";
 
-        // ROM
-        EJS_gameUrl = "https://raw.githubusercontent.com/retrobrews/nes-games/master/invaders.nes";
 
-        // Datos de EmulatorJS
-        EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+        /*
+         * ROM
+         *
+         * Esta es la ROM homebrew que ya comprobamos
+         * que funciona mediante raw.githubusercontent.com
+         */
+        EJS_gameUrl =
+            "https://raw.githubusercontent.com/retrobrews/nes-games/master/invaders.nes";
 
-        // Nombre del juego
-        EJS_gameName = "NES Homebrew";
 
-        // Iniciar automáticamente
+        /*
+         * Archivos de EmulatorJS
+         */
+        EJS_pathtodata =
+            "https://cdn.emulatorjs.org/stable/data/";
+
+
+        /*
+         * Nombre mostrado por EmulatorJS
+         */
+        EJS_gameName = "Invaders";
+
+
+        /*
+         * Idioma
+         *
+         * es-AR no existe en el CDN de EmulatorJS.
+         * Usamos español latinoamericano.
+         */
+        EJS_language = "es-419";
+
+
+        /*
+         * Arrancar automáticamente cuando
+         * EmulatorJS termine de cargar.
+         */
         EJS_startOnLoaded = true;
+
     </script>
 
+
+    <!--
+        Cargamos EmulatorJS
+    -->
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
 </body>
+
 </html>
