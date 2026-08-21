@@ -29,154 +29,80 @@ canvas {
     object-fit: contain;
     image-rendering: pixelated;
 }
-
         #loading {
             position: fixed;
             inset: 0;
-
             display: flex;
             justify-content: center;
             align-items: center;
-
             background: #000;
             color: white;
-
             font-family: Arial, sans-serif;
             font-size: 20px;
-
             z-index: 1000;
         }
-
         #error {
             position: fixed;
             left: 20px;
             right: 20px;
             bottom: 20px;
-
             padding: 15px;
-
             background: #300;
             color: #fff;
-
             font-family: monospace;
             font-size: 14px;
-
             display: none;
-
             z-index: 2000;
         }
     </style>
 </head>
-
 <body>
-
     <div id="loading">
         Cargando emulador...
     </div>
-
     <canvas id="game"></canvas>
-
     <div id="error"></div>
-
 
     <script src="https://unpkg.com/nostalgist@0.21.1/dist/nostalgist.umd.js"></script>
 
-
     <script>
-
         const ROM =
             "https://raw.githubusercontent.com/Kautenja/gym-super-mario-bros/master/gym_super_mario_bros/_roms/super-mario-bros.nes";
 
-
         async function iniciarEmulador() {
-
             try {
-
                 console.log("Iniciando Nostalgist.js...");
-
                 console.log("ROM:", ROM);
-
                 const nostalgist = await Nostalgist.Nostalgist.launch({
 
-                    /*
-                     * Core NES
-                     */
                     core: "fceumm",
-
-                    /*
-                     * ROM
-                     */
                     rom: ROM,
-
-                    /*
-                     * Canvas que utilizará RetroArch
-                     */
                     element: document.getElementById("game"),
-
-                    /*
-                     * Configuración de RetroArch
-                     */
-                    retroarchConfig: {
-
-                        /*
-                         * Video
-                         */
-                        video_smooth: false,
-
-                        /*
-                         * Aspect ratio
-                         */
-                        video_aspect_ratio_auto: true,
-
-                        /*
-                         * Audio
-                         */
-                        audio_enable: true,
-
-                        /*
-                         * Input
-                         */
-                        input_autodetect_enable: true
-                    }
-
+retroarchConfig: {
+    video_smooth: false,
+    video_aspect_ratio_auto: true,
+    video_vsync: true,
+    audio_enable: true,
+    audio_sync: true,
+    input_autodetect_enable: true
+}
                 });
-
-
                 console.log("Nostalgist iniciado correctamente.");
-
                 document.getElementById("loading").style.display = "none";
 
-
-                /*
-                 * Guardamos la instancia por si después
-                 * necesitamos acceder a RetroArch.
-                 */
                 window.nostalgist = nostalgist;
 
-
             } catch (error) {
-
                 console.error("Error iniciando Nostalgist:", error);
-
                 document.getElementById("loading").style.display = "none";
-
                 const errorBox = document.getElementById("error");
-
                 errorBox.style.display = "block";
-
                 errorBox.textContent =
                     "ERROR NOSTALGIST: " + error;
-
-
             }
-
         }
 
-
         iniciarEmulador();
-
     </script>
-
 </body>
-
 </html>
