@@ -9,12 +9,11 @@
 // ------------------------------------------------------------
 
 let emulador = null;
-
 let juegoActual = null;
 
 
 // ------------------------------------------------------------
-// Elementos
+// Elementos HTML
 // ------------------------------------------------------------
 
 const biblioteca =
@@ -25,9 +24,6 @@ const pantallaEmulador =
 
 const contenedorEmulador =
     document.getElementById("contenedor-emulador");
-
-const canvasEmulador =
-    document.getElementById("canvas-emulador");
 
 const botonCerrar =
     document.getElementById("boton-cerrar");
@@ -75,7 +71,7 @@ function crearBiblioteca() {
 
 
 // ------------------------------------------------------------
-// Crear lista
+// Crear lista de juegos
 // ------------------------------------------------------------
 
 function crearLista(lista, elementoID) {
@@ -91,7 +87,6 @@ function crearLista(lista, elementoID) {
 
             const boton =
                 document.createElement("button");
-
 
             boton.className =
                 "juego";
@@ -130,7 +125,6 @@ function crearLista(lista, elementoID) {
 
             // Construir tarjeta
             boton.appendChild(imagen);
-
             boton.appendChild(nombre);
 
 
@@ -159,6 +153,7 @@ function crearLista(lista, elementoID) {
 
 async function iniciarJuego(juego) {
 
+    // Evitar doble lanzamiento
     if (emulador) {
 
         return;
@@ -187,7 +182,7 @@ async function iniciarJuego(juego) {
 
 
     // --------------------------------------------------------
-    // Mostrar emulador
+    // Mostrar pantalla del emulador
     // --------------------------------------------------------
 
     biblioteca.style.display =
@@ -203,14 +198,48 @@ async function iniciarJuego(juego) {
     try {
 
         // ----------------------------------------------------
-        // Limpiar canvas anterior
+        // Limpiar restos anteriores
         // ----------------------------------------------------
 
-        canvasEmulador.width =
-            1;
+        contenedorEmulador.innerHTML =
+            "";
 
-        canvasEmulador.height =
-            1;
+
+        // ----------------------------------------------------
+        // Crear CANVAS NUEVO
+        // ----------------------------------------------------
+
+        const canvas =
+            document.createElement("canvas");
+
+
+        canvas.id =
+            "canvas-emulador";
+
+
+        canvas.style.display =
+            "block";
+
+
+        canvas.style.width =
+            "100vw";
+
+
+        canvas.style.height =
+            "100vh";
+
+
+        canvas.style.backgroundColor =
+            "black";
+
+
+        canvas.style.imageRendering =
+            "pixelated";
+
+
+        contenedorEmulador.appendChild(
+            canvas
+        );
 
 
         // ----------------------------------------------------
@@ -220,10 +249,8 @@ async function iniciarJuego(juego) {
         emulador =
             await Nostalgist.Nostalgist.launch({
 
-                // IMPORTANTE:
-                // Ahora sí pasamos un CANVAS.
                 element:
-                    canvasEmulador,
+                    canvas,
 
                 core:
                     juego.core,
@@ -248,26 +275,6 @@ async function iniciarJuego(juego) {
                     input_autodetect_enable:
                         true
 
-                },
-
-                // ------------------------------------------------
-                // Configuración visual
-                // ------------------------------------------------
-
-                style: {
-
-                    width:
-                        "100vw",
-
-                    height:
-                        "100vh",
-
-                    backgroundColor:
-                        "black",
-
-                    imageRendering:
-                        "pixelated"
-
                 }
 
             });
@@ -282,26 +289,29 @@ async function iniciarJuego(juego) {
         // Obtener canvas real
         // ----------------------------------------------------
 
-        const canvas =
+        const canvasReal =
             emulador.getCanvas();
 
 
-        console.log(
-            "Canvas:",
-            canvas
-        );
+        if (canvasReal) {
 
+            console.log(
+                "Canvas:",
+                canvasReal
+            );
 
-        console.log(
-            "Resolución interna:",
-            canvas.width,
-            "x",
-            canvas.height
-        );
+            console.log(
+                "Resolución interna:",
+                canvasReal.width,
+                "x",
+                canvasReal.height
+            );
+
+        }
 
 
         // ----------------------------------------------------
-        // Ocultar carga
+        // Ocultar mensaje de carga
         // ----------------------------------------------------
 
         cargando.style.display =
@@ -323,7 +333,7 @@ async function iniciarJuego(juego) {
         );
 
 
-        cerrarEmulador();
+        await cerrarEmulador();
 
     }
 
@@ -340,6 +350,10 @@ async function cerrarEmulador() {
         "Cerrando emulador..."
     );
 
+
+    // --------------------------------------------------------
+    // Cerrar Nostalgist
+    // --------------------------------------------------------
 
     try {
 
@@ -360,6 +374,20 @@ async function cerrarEmulador() {
     }
 
 
+    // --------------------------------------------------------
+    // Esperar a que termine la limpieza
+    // --------------------------------------------------------
+
+    await new Promise(
+        resolve =>
+            setTimeout(resolve, 100)
+    );
+
+
+    // --------------------------------------------------------
+    // Limpiar referencias
+    // --------------------------------------------------------
+
     emulador =
         null;
 
@@ -367,15 +395,18 @@ async function cerrarEmulador() {
         null;
 
 
-    // Limpiar canvas
-    canvasEmulador.width =
-        1;
+    // --------------------------------------------------------
+    // Limpiar el contenedor
+    // --------------------------------------------------------
 
-    canvasEmulador.height =
-        1;
+    contenedorEmulador.innerHTML =
+        "";
 
 
-    // Volver biblioteca
+    // --------------------------------------------------------
+    // Volver a biblioteca
+    // --------------------------------------------------------
+
     pantallaEmulador.style.display =
         "none";
 
@@ -403,7 +434,7 @@ botonCerrar.addEventListener(
 
 
 // ------------------------------------------------------------
-// ESC
+// Tecla ESC en PC
 // ------------------------------------------------------------
 
 document.addEventListener(
@@ -424,7 +455,7 @@ document.addEventListener(
 
 
 // ------------------------------------------------------------
-// Resize
+// Ajustar tamaño al cambiar ventana
 // ------------------------------------------------------------
 
 window.addEventListener(
