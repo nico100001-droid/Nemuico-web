@@ -9,28 +9,22 @@
                    initial-scale=1.0,
                    maximum-scale=1.0,
                    user-scalable=no">
-
     <title>Nemuico</title>
 
     <link rel="stylesheet" href="css/estilo.css">
 </head>
 
 <body>
-
     <!-- ========================= -->
     <!-- BIBLIOTECA -->
     <!-- ========================= -->
-
     <main id="biblioteca">
-
         <header class="encabezado">
             <h1>NEMUICO</h1>
             <p>Retro Game Collection</p>
         </header>
 
-
         <div class="sistemas">
-
             <!-- NES -->
             <section class="sistema">
 
@@ -69,51 +63,33 @@
     <!-- EMULADOR -->
     <!-- ========================= -->
 
-    <section id="pantalla-emulador">
-
-        <!-- Botón cerrar -->
-        <button
-            id="boton-cerrar"
-            aria-label="Cerrar juego"
-            title="Cerrar juego">
-            X
-        </button>
-
-        <!-- Nostalgist insertará su canvas aquí -->
-        <div id="contenedor-emulador"></div>
-
-    </section>
-
-
+<section id="pantalla-emulador">
+    <button
+        id="boton-cerrar"
+        aria-label="Cerrar juego"
+        title="Cerrar juego">
+        X
+    </button>
+    <div id="contenedor-emulador">
+        <canvas id="canvas-emulador"></canvas>
+    </div>
+</section>
     <!-- ========================= -->
     <!-- MENSAJE DE CARGA -->
     <!-- ========================= -->
-
     <div id="cargando">
-
         <div class="cargando-contenido">
-
             <div class="spinner"></div>
-
             <div id="texto-cargando">
                 Cargando juego...
             </div>
-
         </div>
-
     </div>
-
-
     <!-- ========================= -->
     <!-- SCRIPTS -->
     <!-- ========================= -->
-
     <script src="https://unpkg.com/nostalgist@0.21.1/dist/nostalgist.umd.js"></script>
-
     <script src="js/juegos.js"></script>
-
     <script src="js/app.js"></script>
-
 </body>
-
 </html>
