@@ -321,26 +321,16 @@ body {
 
 /* Canvas creado por Nostalgist */
 
-#contenedor-emulador canvas {
-
+#canvas-emulador {
     display: block;
-
-    width: 100vw !important;
-
-    height: 100vh !important;
-
+    width: 100vw;
+    height: 100vh;
     max-width: 100vw;
-
     max-height: 100vh;
-
     object-fit: contain;
-
     background: #000;
-
     image-rendering: pixelated;
-
 }
-
 
 /* ------------------------------------------------------------
    BOTÓN CERRAR
