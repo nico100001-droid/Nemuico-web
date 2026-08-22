@@ -9,7 +9,6 @@
 // ------------------------------------------------------------
 
 let emulador = null;
-
 let juegoActual = null;
 
 
@@ -19,19 +18,14 @@ let juegoActual = null;
 
 const biblioteca =
     document.getElementById("biblioteca");
-
 const pantallaEmulador =
     document.getElementById("pantalla-emulador");
-
 const contenedorEmulador =
     document.getElementById("contenedor-emulador");
-
 const botonCerrar =
     document.getElementById("boton-cerrar");
-
 const cargando =
     document.getElementById("cargando");
-
 
 // ------------------------------------------------------------
 // Iniciar aplicación
@@ -40,24 +34,19 @@ const cargando =
 document.addEventListener(
     "DOMContentLoaded",
     () => {
-
         crearBiblioteca();
-
     }
 );
-
 
 // ------------------------------------------------------------
 // Crear biblioteca
 // ------------------------------------------------------------
 
 function crearBiblioteca() {
-
     crearLista(
         juegos.nes,
         "lista-nes"
     );
-
     crearLista(
         juegos.snes,
         "lista-snes"
@@ -69,147 +58,117 @@ function crearBiblioteca() {
     );
 
 }
-
-
 // ------------------------------------------------------------
 // Crear lista de juegos
 // ------------------------------------------------------------
 
 function crearLista(lista, elementoID) {
-
     const contenedor =
         document.getElementById(elementoID);
 
-
-    // Limpiar
     contenedor.innerHTML = "";
-
-
-    // Recorrer juegos
     lista.forEach(
         (juego) => {
-
             const boton =
                 document.createElement("button");
 
-
             boton.className =
                 "juego";
-
-
             boton.type =
                 "button";
-
-
             boton.title =
                 juego.nombre;
-
-
+            // ------------------------------------------------
             // Imagen
+            // ------------------------------------------------
+
             const imagen =
                 document.createElement("img");
-
-
             imagen.src =
                 juego.imagen;
-
-
             imagen.alt =
                 juego.nombre;
-
-
             imagen.loading =
                 "lazy";
 
-
+            // ------------------------------------------------
             // Nombre
+            // ------------------------------------------------
             const nombre =
                 document.createElement("span");
-
-
             nombre.className =
                 "nombre-juego";
-
-
             nombre.textContent =
                 juego.nombre;
-
-
+            // ------------------------------------------------
             // Construir tarjeta
+            // ------------------------------------------------
             boton.appendChild(imagen);
-
             boton.appendChild(nombre);
-
-
-            // Click / OK del control
+            // ------------------------------------------------
+            // Lanzar juego
+            // ------------------------------------------------
             boton.addEventListener(
                 "click",
                 () => {
-
                     iniciarJuego(juego);
-
                 }
             );
-
-
             contenedor.appendChild(boton);
-
         }
     );
-
 }
-
 
 // ------------------------------------------------------------
 // Iniciar juego
 // ------------------------------------------------------------
-
 async function iniciarJuego(juego) {
-
     // Evitar doble lanzamiento
     if (emulador) {
-
         return;
-
     }
-
-
     juegoActual =
         juego;
-
-
     console.log(
         "Iniciando:",
         juego.nombre
     );
-
     console.log(
         "Core:",
         juego.core
     );
-
     console.log(
         "ROM:",
         juego.rom
     );
 
+    // --------------------------------------------------------
+    // Mostrar pantalla del emulador
+    // --------------------------------------------------------
 
-    // Mostrar pantalla emulador
     biblioteca.style.display =
         "none";
-
     pantallaEmulador.style.display =
         "flex";
-
 
     // Mostrar cargando
     cargando.style.display =
         "flex";
-
-
     try {
 
+        // ----------------------------------------------------
         // Lanzar Nostalgist
+        // ----------------------------------------------------
+        //
+        // IMPORTANTE:
+        //
+        // NO pasamos "element".
+        //
+        // Nostalgist creará automáticamente
+        // el canvas correcto.
+        //
+        // ----------------------------------------------------
+
         emulador =
             await Nostalgist.Nostalgist.launch({
 
@@ -220,19 +179,17 @@ async function iniciarJuego(juego) {
                     juego.rom,
 
                 /*
-                 * Usamos el contenedor para que
-                 * Nostalgist cree el canvas.
+                 * Mantener activado el cache.
+                 *
+                 * Esto es especialmente interesante
+                 * para la TV: una vez descargado el core,
+                 * los siguientes juegos pueden arrancar
+                 * más rápidamente.
                  */
-                element:
-                    contenedorEmulador,
+                cache: true,
 
                 /*
-                 * Configuración básica.
-                 *
-                 * No vamos a forzar resolución
-                 * todavía porque queremos mantener
-                 * el comportamiento que comprobamos
-                 * que funciona en Firefox TV.
+                 * Configuración de RetroArch.
                  */
                 retroarchConfig: {
 
@@ -254,15 +211,18 @@ async function iniciarJuego(juego) {
         );
 
 
-        // Ocultar carga
+        // ----------------------------------------------------
+        // Ocultar cargando
+        // ----------------------------------------------------
+
         cargando.style.display =
             "none";
 
 
-        /*
-         * Asegurarnos de que el canvas
-         * ocupe la pantalla.
-         */
+        // ----------------------------------------------------
+        // Ajustar canvas
+        // ----------------------------------------------------
+
         ajustarCanvas();
 
 
@@ -294,11 +254,25 @@ async function iniciarJuego(juego) {
 
 function ajustarCanvas() {
 
+    /*
+     * Nostalgist crea el canvas automáticamente
+     * y lo agrega al body.
+     *
+     * Por eso NO buscamos el canvas dentro de
+     * #contenedor-emulador.
+     */
+
     const canvas =
-        contenedorEmulador.querySelector("canvas");
+        document.querySelector(
+            "#pantalla-emulador canvas"
+        );
 
 
     if (!canvas) {
+
+        console.warn(
+            "No se encontró el canvas de Nostalgist."
+        );
 
         return;
 
@@ -342,30 +316,19 @@ async function cerrarEmulador() {
     );
 
 
-    // Ocultar pantalla
-    pantallaEmulador.style.display =
-        "none";
-
-
-    // Mostrar biblioteca
-    biblioteca.style.display =
-        "block";
-
-
-    // Ocultar cargando
-    cargando.style.display =
-        "none";
-
+    // --------------------------------------------------------
+    // Cerrar Nostalgist
+    // --------------------------------------------------------
 
     try {
 
         if (emulador) {
 
             /*
-             * Nostalgist dispone de exit()
-             * para detener RetroArch y eliminar
-             * el canvas.
+             * Nostalgist.exit() elimina el canvas
+             * automáticamente.
              */
+
             emulador.exit();
 
         }
@@ -381,17 +344,38 @@ async function cerrarEmulador() {
     }
 
 
-    // Limpiar
+    // --------------------------------------------------------
+    // Limpiar referencias
+    // --------------------------------------------------------
+
     emulador =
         null;
-
 
     juegoActual =
         null;
 
 
+    // --------------------------------------------------------
+    // Limpiar contenedor
+    // --------------------------------------------------------
+
     contenedorEmulador.innerHTML =
         "";
+
+
+    // --------------------------------------------------------
+    // Volver a biblioteca
+    // --------------------------------------------------------
+
+    pantallaEmulador.style.display =
+        "none";
+
+    biblioteca.style.display =
+        "block";
+
+
+    cargando.style.display =
+        "none";
 
 }
 
